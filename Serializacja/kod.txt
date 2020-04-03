@@ -1,0 +1,360 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Xml.Serialization;
+
+namespace WindowsFormsApplication1
+{
+    public partial class Form1 : Form
+    {
+        public Dane dane = new Dane();
+        private int szer = 0;
+        private int wys = 0;
+        public int suma_masek = 0;
+        public Form1()
+        {
+            InitializeComponent();
+        }
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            StreamReader sr = new StreamReader("dane.xml");
+            try
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(Dane));
+                dane = (Dane)serializer.Deserialize(sr);
+                trackBar1.Value = dane.Prog1;
+                textBox1.Text = dane.M1.ToString();
+                textBox2.Text = dane.M2.ToString();
+                textBox3.Text = dane.M3.ToString();
+                textBox4.Text = dane.M4.ToString();
+                textBox5.Text = dane.M5.ToString();
+                textBox6.Text = dane.M6.ToString();
+                textBox7.Text = dane.M7.ToString();
+                textBox8.Text = dane.M8.ToString();
+                textBox9.Text = dane.M9.ToString();
+            }
+            catch (Exception err)
+            {
+                Text = err.ToString();
+            }
+            finally
+            {
+                sr.Close();
+            }
+        }
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                pictureBox2.Load(openFileDialog1.FileName);
+                szer = pictureBox2.Width;
+                wys = pictureBox2.Height;
+                pictureBox3.Image = new Bitmap(szer, wys);
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Bitmap b2 = (Bitmap)pictureBox2.Image;
+            Bitmap b3 = (Bitmap)pictureBox3.Image;
+            Color k;
+            for (int x = 0; x < szer; x++)
+            {
+                for (int y = 0; y < wys; y++)
+                {
+                    k = b2.GetPixel(x, y);
+
+                    b3.SetPixel(x, y, Color.FromArgb(k.B, k.G, k.R));
+                }
+            }
+            pictureBox3.Refresh();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            Bitmap b2 = (Bitmap)pictureBox2.Image;
+            Bitmap b3 = (Bitmap)pictureBox3.Image;
+            Color k;
+            for (int x = 0; x < szer; x++)
+            {
+                for (int y = 0; y < wys; y++)
+                {
+                    k = b2.GetPixel(x, y);
+
+                    b3.SetPixel(x, y, Color.FromArgb(k.B, k.R, k.G));
+                }
+            }
+            pictureBox3.Refresh();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            Bitmap b2 = (Bitmap)pictureBox2.Image;
+            Bitmap b3 = (Bitmap)pictureBox3.Image;
+            Color k;
+            for (int x = 0; x < szer; x++)
+            {
+                for (int y = 0; y < wys; y++)
+                {
+                    k = b2.GetPixel(x, y);
+
+                    b3.SetPixel(x, y, Color.FromArgb(k.R, k.B, k.G));
+                }
+            }
+            pictureBox3.Refresh();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            Bitmap b2 = (Bitmap)pictureBox2.Image;
+            Bitmap b3 = (Bitmap)pictureBox3.Image;
+            Color k;
+            for (int x = 0; x < szer; x++)
+            {
+                for (int y = 0; y < wys; y++)
+                {
+                    k = b3.GetPixel(x, y);
+
+                    b2.SetPixel(x, y, Color.FromArgb(k.R, k.G, k.B));
+                }
+            }
+            pictureBox2.Refresh();
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            Bitmap b2 = (Bitmap)pictureBox2.Image;
+            Bitmap b3 = (Bitmap)pictureBox3.Image;
+            Color k;
+            for (int x = 0; x < szer; x++)
+            {
+                for (int y = 0; y < wys; y++)
+                {
+                    k = b2.GetPixel(x, y);
+                    int r = k.R;
+                    int g = k.G;
+                    int b = k.B;
+                    int avg = (r+g+b) / 3;
+                    b3.SetPixel(x, y, Color.FromArgb(avg, avg, avg));
+                }
+            }
+            pictureBox3.Refresh();
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            Bitmap b2 = (Bitmap)pictureBox2.Image;
+            Bitmap b3 = (Bitmap)pictureBox3.Image;
+            Color k;
+            for (int x = 0; x < szer; x++)
+            {
+                for (int y = 0; y < wys; y++)
+                {
+                    k = b2.GetPixel(x, y);
+                    int r = (int)(k.R * 0.59);
+                    int g = (int)(k.G * 0.11);
+                    int b = (int)(k.B * 0.30);
+                    int c = r + g + b;
+                    b3.SetPixel(x, y, Color.FromArgb(c, c, c));
+                }
+            }
+            pictureBox3.Refresh();
+        }
+
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            trackBar1.Minimum = 0;
+            trackBar1.Maximum = 255;
+            Bitmap b2 = (Bitmap)pictureBox2.Image;
+            Bitmap b3 = (Bitmap)pictureBox3.Image;
+            Color k;
+            for (int x = 0; x < szer; x++)
+            {
+                for (int y = 0; y < wys; y++)
+                {
+                    k = b2.GetPixel(x, y);
+                    int r = k.R;
+                    int g = k.G;
+                    int b = k.B;
+                    int avg = (r + g + b) / 3;
+                    if (avg < trackBar1.Value)
+                    {
+                        k = Color.Black;
+                        b3.SetPixel(x, y, Color.FromArgb(k.R, k.G, k.B));
+                    }
+                    else
+                    {
+                        k = Color.White;
+                        b3.SetPixel(x, y, Color.FromArgb(k.R, k.G, k.B));
+                    }
+                }
+            }
+            pictureBox3.Refresh();
+            
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            Bitmap b2 = (Bitmap)pictureBox2.Image;
+            Bitmap b3 = (Bitmap)pictureBox3.Image;
+            Color k;
+            int prog1 = 80;
+            int prog2 = 160;
+            for (int x = 0; x < szer; x++)
+            {
+                for (int y = 0; y < wys; y++)
+                {
+                    k = b2.GetPixel(x, y);
+                    int r = k.R;
+                    int g = k.G;
+                    int b = k.B;
+                    int avg = (r + g + b) / 3;
+                    if (avg < prog1)
+                    {
+                        k = Color.Black;
+                        b3.SetPixel(x, y, Color.FromArgb(k.R, k.G, k.B));
+                    }
+                    else if(avg < prog2)
+                    {
+                        k = Color.Gray;
+                        b3.SetPixel(x, y, Color.FromArgb(k.R, k.G, k.B));
+                    }
+                    else
+                    {
+                        k = Color.White;
+                        b3.SetPixel(x, y, Color.FromArgb(k.R, k.G, k.B));
+                    }
+                    
+                }
+            }
+            pictureBox3.Refresh();
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            Color k1, k2, k3, k4, k5, k6, k7, k8, k9;
+            int r, g, b;
+            Bitmap b2 = (Bitmap)pictureBox2.Image;
+            Bitmap b3 = (Bitmap)pictureBox3.Image;
+
+            dane.M1 = Convert.ToInt32(textBox1.Text);
+            dane.M2 = Convert.ToInt32(textBox2.Text);
+            dane.M3 = Convert.ToInt32(textBox3.Text);
+            dane.M4 = Convert.ToInt32(textBox4.Text);
+            dane.M5 = Convert.ToInt32(textBox5.Text);
+            dane.M6 = Convert.ToInt32(textBox6.Text);
+            dane.M7 = Convert.ToInt32(textBox7.Text);
+            dane.M8 = Convert.ToInt32(textBox8.Text);
+            dane.M9 = Convert.ToInt32(textBox9.Text);
+
+            suma_masek = dane.M1 + dane.M2 + dane.M3 + dane.M4 + dane.M5 + dane.M6 + dane.M7 + dane.M8 + dane.M9;
+
+            for (int x = 2; x < szer - 1; x++)
+            {
+                for (int y = 2; y < wys - 1; y++)
+                {
+                    k1 = b2.GetPixel(x - 1, y - 1);
+                    k2 = b2.GetPixel(x, y - 1);
+                    k3 = b2.GetPixel(x + 1, y - 1);
+                    k4 = b2.GetPixel(x + 1, y);
+                    k5 = b2.GetPixel(x + 1, y + 1);
+                    k6 = b2.GetPixel(x, y + 1);
+                    k7 = b2.GetPixel(x - 1, y + 1);
+                    k8 = b2.GetPixel(x - 1, y);
+                    k9 = b2.GetPixel(x, y);
+
+                    r = k1.R * dane.M5 + k2.R * dane.M4 + k3.R * dane.M3 + k4.R * dane.M2 + k5.R * dane.M1+ k6.R * dane.M6 + k7.R * dane.M7 + k8.R * dane.M8 + k9.R * dane.M9;
+                    r = r / suma_masek;
+                    if (r > 255) r = 255;
+                    if (r < 0) r = 0;
+
+                    g = k1.G * dane.M5 + k2.G * dane.M4 + k3.G * dane.M3 + k4.G * dane.M2 + k5.G * dane.M1+ k6.G * dane.M6 + k7.G * dane.M7 + k8.G * dane.M8 + k9.G * dane.M9;
+                    g = g / suma_masek;
+                    if (g > 255) g = 255;
+                    if (g < 0) g = 0;
+
+                    b = k1.B * dane.M5 + k2.B * dane.M4 + k3.B * dane.M3 + k4.B * dane.M2 + k5.B * dane.M1+ k6.B * dane.M6 + k7.B * dane.M7 + k8.B * dane.M8 + k9.B * dane.M9;
+                    b = b / suma_masek;
+                    if (b > 255) b = 255;
+                    if (b < 0) b = 0;
+
+                    b3.SetPixel(x, y, Color.FromArgb(r, g, b));
+                }
+            }
+            pictureBox3.Refresh();
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            StreamWriter sw = new StreamWriter("dane.xml");
+            try
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(Dane));
+                serializer.Serialize(sw, dane);
+                sw.Close();
+            }
+            catch (Exception err)
+            {
+                Text = err.ToString();
+            }
+            finally
+            {
+                sw.Close();
+            }
+        }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            Bitmap b2 = (Bitmap)pictureBox2.Image;
+            Bitmap b3 = (Bitmap)pictureBox3.Image;
+            Color k;
+            int r, g, b, a;
+            dane.Prog1 = trackBar1.Value;
+            for (int x = 0; x < szer; x++)
+            {
+                for (int y = 0; y < wys; y++)
+                {
+                    k = b2.GetPixel(x, y);
+                    r = k.R;
+                    g = k.G;
+                    b = k.B;
+                    a = (r + g + b) / 3;
+                    if (a < dane.Prog1)
+                    {
+                        k = Color.Black;
+                    }
+                    else
+                    {
+                        k = Color.White;
+                    }
+                    b3.SetPixel(x, y, k);
+
+                }
+            }
+            pictureBox3.Refresh();
+        }
+    }
+    public class Dane
+    {
+        public int Prog1 = 50, Prog2 = 180;
+
+        public int M1 = 1, M2 = 2, M3 = 1, M4 = 2, M5 = 3, M6 = 2, M7 = 1, M8 = 2, M9 = 1;
+    }
+}
