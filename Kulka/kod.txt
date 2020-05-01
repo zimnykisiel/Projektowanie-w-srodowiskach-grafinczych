@@ -1,0 +1,115 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace WindowsFormsApp1
+{
+    public partial class Form1 : Form
+    {
+        //Tworzę obiekty kulek
+        private Kulka k = new Kulka(10, 10, 20, 10, 10);
+        private Kulka k1 = new Kulka(200, 200, 30, 15, 15);
+        private Kulka k2 = new Kulka(100, 300, 40, 20, 20);
+
+        public Form1()
+        {
+            InitializeComponent();
+            //Sytle, żeby kulki chodziły płynniej
+            this.SetStyle(
+                ControlStyles.OptimizedDoubleBuffer |
+                ControlStyles.AllPaintingInWmPaint |
+                ControlStyles.UserPaint,
+                true
+                );
+
+            this.UpdateStyles();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+        
+        public class Kulka
+        {
+            public int x { get; set; }
+            public int y { get; set; }
+            public int promien { get; set; }
+            public int predkoscx { get; set; }
+            public int predkoscy { get; set; }
+            //Tworzę konstruktor kulki
+            public Kulka(int px, int py, int pr, int speedx, int speedy)
+            {
+                x = px;
+                y = py;
+                promien = pr;
+                predkoscx = speedx;
+                predkoscy = speedy;
+            }
+
+        }
+
+        private void panel2_Paint(object sender, PaintEventArgs e)
+        {
+            //Rysuję kulki na panelu
+            e.Graphics.FillEllipse(Brushes.Red, k.x, k.y, k.promien*2, k.promien*2);
+            e.Graphics.FillEllipse(Brushes.Orange, k1.x, k1.y, k1.promien * 2, k1.promien * 2);
+            e.Graphics.FillEllipse(Brushes.Green, k2.x, k2.y, k2.promien * 2, k2.promien * 2);
+        }
+
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            //Kulka
+            //Przesuwam kulkę wzdłuż osi x
+            k.x += k.predkoscx;
+            //Jeżeli kulka dotknie sciany okna
+            if(k.x<0 || k.x + k.promien * 2 > panel2.Width)
+            {
+                //Zamiana toru lotu kulki na przeciwny
+                k.predkoscx = -k.predkoscx;
+            }
+            k.y += k.predkoscy;
+            if (k.y < 0 || k.y + k.promien * 2 > panel2.Height)
+            {
+                k.predkoscy = -k.predkoscy;
+            }
+
+
+            //Kulka 1
+            k1.x += k1.predkoscx;
+            if (k1.x < 0 || k1.x + k1.promien * 2 > panel2.Width)
+            {
+                k1.predkoscx = -k1.predkoscx;
+            }
+
+            k1.y += k1.predkoscy;
+            if (k1.y < 0 || k1.y + k1.promien * 2 > panel2.Height)
+            {
+                k1.predkoscy = -k1.predkoscy;
+            }
+
+            //Kulka 2
+
+            k2.x += k2.predkoscx;
+            if (k2.x < 0 || k2.x + k2.promien * 2 > panel2.Width)
+            {
+                k2.predkoscx = -k2.predkoscx;
+            }
+
+            k2.y += k2.predkoscy;
+            if (k2.y < 0 || k2.y + k2.promien * 2 > panel2.Height)
+            {
+                k2.predkoscy = -k2.predkoscy;
+            }
+
+            panel2.Refresh();
+        }
+    }
+}
