@@ -1,0 +1,125 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Kulki_upgrade
+{
+    public partial class Form1 : Form
+    {
+        private List<Figura> fig = new List<Figura>();
+        public Form1()
+        {
+            fig.Add(new Kulka(100, 100, 2, -3, 20, Color.Blue));
+            fig.Add(new Kwadrat(200, 400, -2, 5, 30, Color.Red));
+            fig.Add(new Prostokat(500, 200, -2, 5, 30, Color.Pink));
+            InitializeComponent();
+        }
+        private List<Kulka> kulki = new List<Kulka>();
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            timer1.Start();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            timer1.Stop();
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            foreach (Figura f in fig)
+                f.porusz(mojPanel1.Width, mojPanel1.Height);
+            mojPanel1.Invalidate();
+        }
+
+        private void mojPanel1_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            foreach (Figura f in fig)
+            {
+                f.rysuj(e.Graphics);
+            }
+        }
+    }
+    public class MojPanel : Panel           //klasa pojawi sie na Toolbox (po przekompilowaniu), o ile jest public i ma konstr bezparametrowego.
+    {
+        public MojPanel()
+        {
+            DoubleBuffered = true;
+        }
+    }
+    abstract class Figura
+    {
+        protected int x, y, vx, vy, r;
+        protected SolidBrush b;
+
+        public Figura(int ax, int ay, int avx, int avy, int ar, Color ak)
+        {
+            x = ax;
+            y = ay;
+            vx = avx;
+            vy = avy;
+            r = ar;
+            b = new SolidBrush(ak);
+        }
+        abstract public void rysuj(Graphics g);     //tu pies pogrzebany
+
+        public void porusz(int szer, int wys)
+        {
+            x += vx;
+            if (x >= szer - r || x <= r)
+                vx = -vx;
+            y += vy;
+            if (y >= wys - r || y <= r)
+                vy = -vy;
+        }
+    }
+    class Kulka : Figura
+    {
+        public Kulka(int ax, int ay, int avx, int avy, int ar, Color ak) : base(ax, ay, avx, avy, ar, ak)
+        {
+        }
+        override
+        public void rysuj(Graphics g)
+        {
+            g.FillEllipse(b, x - r, y - r, 2 * r, 2 * r);
+        }
+    }
+
+    class Kwadrat : Figura
+    {
+        public Kwadrat(int ax, int ay, int avx, int avy, int ar, Color ak) : base(ax, ay, avx, avy, ar, ak)
+        {
+        }
+        override
+        public void rysuj(Graphics g)
+        {
+            g.FillRectangle(b, x - r, y - r, 2 * r, 2 * r);
+        }
+    }
+    class Prostokat : Figura
+    {
+        public Prostokat(int ax, int ay, int avx, int avy, int ar, Color ak) : base(ax, ay, avx, avy, ar, ak)
+        {
+        }
+        override
+        public void rysuj(Graphics g)
+        {
+            g.FillRectangle(b, x - r, y - r, 4 * r, 2 * r);
+        }
+    }
+}
